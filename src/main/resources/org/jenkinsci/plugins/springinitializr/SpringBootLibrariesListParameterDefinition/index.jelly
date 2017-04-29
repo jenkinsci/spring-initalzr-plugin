@@ -1,0 +1,83 @@
+<?jelly escape-by-default='true'?>
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
+         xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+    <style>
+        #hiddenValue {display: none}
+        .selectedDisplay { min-height: 30px}
+        .selectedId { background: lightgreen; display: inline-block; padding: 3px; margin: 3px; cursor: pointer;}
+    </style>
+        <f:entry title="Spring boot libraries are going to be used">
+            <f:textbox id="hiddenValue" field="parameter"/>
+
+        <div></div>
+        <div class="selectedDisplay" id="selected"></div>
+        <input id="search"/>
+        <j:forEach var="lib" items="${it.libs}" indexVar="idx">
+            <div id="lib-${idx}"><label><input type="checkbox" onclick="clicked(event)" value="${lib.id}"/>${lib.name}</label></div>
+        </j:forEach>
+        </f:entry>
+    <script>
+        var selectedIds = [];
+        var idBySearch = [
+        <j:set var="lastIndex" value="${it.libs.size() - 1}"/>
+        <j:forEach var="lib" items="${it.libs}" indexVar="idx">
+            {"id": "lib-${idx}", "search" : "${lib.name.toLowerCase()} ${lib.description.toLowerCase()} ${lib.id.toLowerCase()}"}<j:if test="${idx != lastIndex}">,</j:if>
+        </j:forEach>
+        ];
+        var searchBox = document.getElementById("search");
+        var selectedDisplay = document.getElementById("selected");
+        var hiddenValue = document.getElementById("hiddenValue");
+        var lastText = "";
+        setInterval(function () {
+            var text = searchBox.value;
+            if(lastText != text) {
+                onChange(text);
+                lastText = text;
+            }
+        }, 100)
+
+        function onChange(text) {
+            text = text.toLowerCase();
+            for (var prop in idBySearch) {
+                if (idBySearch.hasOwnProperty(prop)) {
+                    var item = idBySearch[prop];
+                    document.getElementById(item.id).style.display = item.search.indexOf(text) >= 0 ? "block" : "none   "
+                }
+            }
+        }
+        function clicked(event) {
+            var id = event.target.value;
+            if(event.target.checked) {
+                selectedIds.push(id);
+            }
+            else {
+                var newIds = []
+                for (var prop in selectedIds) {
+                    if (selectedIds.hasOwnProperty(prop)) {
+                        var item = selectedIds[prop];
+                        if(item !== id)
+                            newIds.push(item)
+                    }
+                }
+                selectedIds = newIds;
+            }
+            updateSelected();
+        }
+        function updateSelected() {
+            var anHtml = "";
+            var anJson = "[";
+            for (var prop in selectedIds) {
+                if (selectedIds.hasOwnProperty(prop)) {
+                    var item = selectedIds[prop];
+                     anHtml += "&lt;div class='selectedId' onclick='selClicked(\"" + item + "\")'>" + item + "&lt;/div>";
+                     anJson += '"' + item + '",';
+                }
+            }
+            selectedDisplay.innerHTML = anHtml;
+            hiddenValue.value = "[{\"name\" : \"spring-boot-libraries\", \"value\":" + anJson.replace(/,$/, "]") + "}]";
+        }
+        function selClicked(text) {
+            searchBox.value = text
+        }
+    </script>
+</j:jelly>

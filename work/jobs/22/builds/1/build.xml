@@ -1,0 +1,22 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<hudson.maven.MavenModuleSetBuild plugin="maven-plugin@2.7.1">
+  <actions>
+    <hudson.model.CauseAction>
+      <causes>
+        <hudson.model.Cause_-UserIdCause/>
+      </causes>
+    </hudson.model.CauseAction>
+  </actions>
+  <queueId>2</queueId>
+  <timestamp>1493278517387</timestamp>
+  <startTime>1493278517401</startTime>
+  <result>FAILURE</result>
+  <duration>29</duration>
+  <charset>UTF-8</charset>
+  <keepLog>false</keepLog>
+  <builtOn></builtOn>
+  <workspace>/home/migger/work/j/start.spring.plugin/spring-initalzr/work/workspace/22</workspace>
+  <hudsonVersion>1.625.3</hudsonVersion>
+  <scm class="hudson.scm.NullChangeLogParser"/>
+  <culprits class="com.google.common.collect.EmptyImmutableSortedSet"/>
+</hudson.maven.MavenModuleSetBuild>

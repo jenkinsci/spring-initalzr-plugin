@@ -19,10 +19,13 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.picocontainer.MutablePicoContainer;
+import org.picocontainer.PicoContainer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.List;
 
 import static org.jenkinsci.plugins.springinitializr.SpringBootLibrariesListParameterDefinition.picoContainer;
@@ -81,7 +84,7 @@ public class SpringBootLibrariesListParameterDefinitionTest {
 
     @Test
     public void testPicoContainer() throws Exception {
-        picoContainer = mock(MutablePicoContainer.class);
+        setPicoContainer(mock(MutablePicoContainer.class));
         SpringBootLibrariesListParameterDefinition.init();
         verify(picoContainer).addComponent(SpringInitializrClientImpl.class);
         verify(picoContainer).addComponent(SpringInitializrUrlProviderImpl.class);
@@ -89,4 +92,23 @@ public class SpringBootLibrariesListParameterDefinitionTest {
         verify(picoContainer).addComponent(LightRestTemplateImpl.class);
         verify(picoContainer).start();
     }
+    @Test
+    public void testGetClient() throws Exception {
+        setPicoContainer(mock(MutablePicoContainer.class));
+        final SpringInitializrClient expected = mock(SpringInitializrClient.class);
+        when(picoContainer.getComponent(SpringInitializrClient.class)).thenReturn(expected);
+        final SpringInitializrClient actual = SpringBootLibrariesListParameterDefinition.getSpringInitializrClient();
+        assertEquals(expected, actual);
+    }
+
+    private static void setPicoContainer(MutablePicoContainer picoContainer) throws Exception {
+        Field field = SpringBootLibrariesListParameterDefinition.class.getDeclaredField("picoContainer");
+        field.setAccessible(true);
+        // remove final modifier from field
+        Field modifiersField = Field.class.getDeclaredField("modifiers");
+        modifiersField.setAccessible(true);
+        modifiersField.setInt(field, field.getModifiers() & ~Modifier.FINAL);
+        field.set(null, picoContainer);
+    }
+
 }

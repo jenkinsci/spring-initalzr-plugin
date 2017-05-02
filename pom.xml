@@ -19,7 +19,9 @@
     </properties>
 
     <name>Spring Initalzr plugin</name>
-    <description>Add build parameter to be able to select spring dependencies(Spring Initalzr, http://start.spring.io)</description>
+    <description>
+        Add build parameter to be able to select spring dependencies(Spring Initalzr, http://start.spring.io)
+    </description>
     <url>https://wiki.jenkins-ci.org/display/JENKINS/SpringInitalzrPlugin</url>
 
     <licenses>
@@ -68,6 +70,11 @@
             <version>2.15</version>
         </dependency>
         <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.16.16</version>
+        </dependency>
+        <dependency>
             <groupId>org.powermock</groupId>
             <artifactId>powermock-api-mockito</artifactId>
             <version>1.6.4</version>
@@ -77,6 +84,12 @@
             <groupId>org.powermock</groupId>
             <artifactId>powermock-module-junit4</artifactId>
             <version>1.6.4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.google.code.bean-matchers</groupId>
+            <artifactId>bean-matchers</artifactId>
+            <version>0.10</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

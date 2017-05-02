@@ -5,7 +5,11 @@ import hudson.model.ParameterValue;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.jenkinsci.plugins.springinitializr.client.SpringInitializrClient;
+import org.jenkinsci.plugins.springinitializr.client.SpringInitializrClientImpl;
+import org.jenkinsci.plugins.springinitializr.client.SpringInitializrUrlProviderImpl;
 import org.jenkinsci.plugins.springinitializr.client.domain.SpringDependency;
+import org.jenkinsci.plugins.springinitializr.rest.JsonParserImpl;
+import org.jenkinsci.plugins.springinitializr.rest.LightRestTemplateImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -14,15 +18,16 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.runners.MockitoJUnitRunner;
+import org.picocontainer.MutablePicoContainer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.util.List;
 
+import static org.jenkinsci.plugins.springinitializr.SpringBootLibrariesListParameterDefinition.picoContainer;
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({SpringBootLibrariesListParameterDefinition.class, JSONObject.class, JSONArray.class})
@@ -32,7 +37,7 @@ public class SpringBootLibrariesListParameterDefinitionTest {
     @Mock
     private SpringInitializrClient springInitializrClient;
 
-    @Before
+
     public void setUp() throws Exception {
         PowerMockito.mockStatic(SpringBootLibrariesListParameterDefinition.class);
         when(SpringBootLibrariesListParameterDefinition.getSpringInitializrClient()).thenReturn(springInitializrClient);
@@ -40,6 +45,7 @@ public class SpringBootLibrariesListParameterDefinitionTest {
 
     @Test
     public void annotationsAndDefaultValues() throws Exception {
+        setUp();
         assertNotNull(SpringBootLibrariesListParameterDefinition.SpringBootLibrariesListParameter.class.getAnnotation(Extension.class));
         assertEquals("spring-boot-libraries", springBootLibrariesListParameterDefinition.getName());
         assertEquals("List of spring boot libraries to use in created micro service", springBootLibrariesListParameterDefinition.getDescription());
@@ -48,11 +54,13 @@ public class SpringBootLibrariesListParameterDefinitionTest {
 
     @Test(expected = RuntimeException.class)
     public void notSupported() throws Exception {
+        setUp();
         springBootLibrariesListParameterDefinition.createValue(mock(StaplerRequest.class));
     }
 
     @Test
     public void getLibs() throws Exception {
+        setUp();
         final List<SpringDependency> expected = mock(List.class);
         when(springInitializrClient.getAvailableDependencies("1.5.3.RELEASE")).thenReturn(expected);
         assertEquals(expected, springBootLibrariesListParameterDefinition.getLibs());
@@ -60,6 +68,7 @@ public class SpringBootLibrariesListParameterDefinitionTest {
 
     @Test
     public void createSelectedSpringBootParameter() throws Exception {
+        setUp();
         final StaplerRequest staplerRequest = mock(StaplerRequest.class);
         final JSONObject jsonObject = mock(JSONObject.class);
         final JSONArray jsonArray = mock(JSONArray.class);
@@ -68,6 +77,16 @@ public class SpringBootLibrariesListParameterDefinitionTest {
         final ParameterValue value = springBootLibrariesListParameterDefinition.createValue(staplerRequest, jsonObject);
         assertEquals("selectedSpringDependencies", value.getName());
         assertEquals("lib-ids", value.getValue());
+    }
 
+    @Test
+    public void testPicoContainer() throws Exception {
+        picoContainer = mock(MutablePicoContainer.class);
+        SpringBootLibrariesListParameterDefinition.init();
+        verify(picoContainer).addComponent(SpringInitializrClientImpl.class);
+        verify(picoContainer).addComponent(SpringInitializrUrlProviderImpl.class);
+        verify(picoContainer).addComponent(JsonParserImpl.class);
+        verify(picoContainer).addComponent(LightRestTemplateImpl.class);
+        verify(picoContainer).start();
     }
 }

@@ -1,13 +1,13 @@
 package org.jenkinsci.plugins.springinitializr;
 
+import com.google.common.base.Joiner;
 import com.google.inject.Inject;
 import hudson.Extension;
 import hudson.init.InitMilestone;
 import hudson.init.Initializer;
-import hudson.model.ParameterDefinition;
-import hudson.model.ParameterValue;
-import hudson.model.StringParameterValue;
+import hudson.model.*;
 import net.sf.json.JSONObject;
+import org.jenkinsci.Symbol;
 import org.jenkinsci.plugins.springinitializr.client.SpringInitializrClient;
 import org.jenkinsci.plugins.springinitializr.client.SpringInitializrClientImpl;
 import org.jenkinsci.plugins.springinitializr.client.SpringInitializrUrlProviderImpl;
@@ -24,9 +24,10 @@ import org.picocontainer.PicoContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.HashSet;
 import java.util.List;
 
-@Extension
+
 public class SpringBootLibrariesListParameterDefinition extends ParameterDefinition {
     public static final Logger LOG = LoggerFactory.getLogger(SpringBootLibrariesListParameterDefinition.class);
     protected final static MutablePicoContainer picoContainer = new PicoBuilder().withSetterInjection().build();
@@ -34,7 +35,7 @@ public class SpringBootLibrariesListParameterDefinition extends ParameterDefinit
 
     @DataBoundConstructor
     public SpringBootLibrariesListParameterDefinition() {
-        super("spring-boot-libraries", "List of spring boot libraries to use in created micro service");
+        super("selectedSpringDependencies","List of spring boot libraries to use in created micro service");
     }
 
     @Initializer(after = InitMilestone.PLUGINS_STARTED  )
@@ -55,9 +56,24 @@ public class SpringBootLibrariesListParameterDefinition extends ParameterDefinit
         return getSpringInitializrClient().getAvailableDependencies(springBootVersion);
     }
 
+    public String getGroups() throws Exception {
+        final HashSet<String> groups = new HashSet<>();
+        for (SpringDependency springDependency : getSpringInitializrClient().getAvailableDependencies(springBootVersion)) {
+            groups.add(springDependency.getGroup());
+        }
+        return Joiner.on(", ").join(groups);
+    }
+
     @Override
-    public ParameterValue createValue(StaplerRequest staplerRequest, JSONObject jsonObject) {
-        return new StringParameterValue("selectedSpringDependencies", jsonObject.getJSONArray("value").join(",", true));
+    public StringParameterValue createValue(StaplerRequest staplerRequest, JSONObject jsonObject) {
+        final StringParameterValue stringParameterValue = staplerRequest.bindJSON(StringParameterValue.class, jsonObject);
+        stringParameterValue.setDescription(getDescription());
+        return stringParameterValue;
+    }
+
+    @Override
+    public ParameterValue createValue(StaplerRequest staplerRequest) {
+        throw new RuntimeException();
     }
 
     @Extension
@@ -67,11 +83,5 @@ public class SpringBootLibrariesListParameterDefinition extends ParameterDefinit
         public String getDisplayName() {
             return "Spring boot libraries";
         }
-    }
-
-    // Not used
-    @Override
-    public ParameterValue createValue(StaplerRequest staplerRequest) {
-        throw new RuntimeException("You should supply json value");
     }
 }

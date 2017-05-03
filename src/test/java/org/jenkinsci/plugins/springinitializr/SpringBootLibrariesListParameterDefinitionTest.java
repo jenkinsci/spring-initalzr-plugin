@@ -2,6 +2,7 @@ package org.jenkinsci.plugins.springinitializr;
 
 import hudson.Extension;
 import hudson.model.ParameterValue;
+import hudson.model.StringParameterValue;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 import org.jenkinsci.plugins.springinitializr.client.SpringInitializrClient;
@@ -11,22 +12,19 @@ import org.jenkinsci.plugins.springinitializr.client.domain.SpringDependency;
 import org.jenkinsci.plugins.springinitializr.rest.JsonParserImpl;
 import org.jenkinsci.plugins.springinitializr.rest.LightRestTemplateImpl;
 import org.jenkinsci.plugins.springinitializr.util.UnZipServiceImpl;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.kohsuke.stapler.StaplerRequest;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.runners.MockitoJUnitRunner;
 import org.picocontainer.MutablePicoContainer;
-import org.picocontainer.PicoContainer;
 import org.powermock.api.mockito.PowerMockito;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.PowerMockRunner;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.jenkinsci.plugins.springinitializr.SpringBootLibrariesListParameterDefinition.picoContainer;
@@ -36,6 +34,7 @@ import static org.mockito.Mockito.*;
 @RunWith(PowerMockRunner.class)
 @PrepareForTest({SpringBootLibrariesListParameterDefinition.class, JSONObject.class, JSONArray.class})
 public class SpringBootLibrariesListParameterDefinitionTest {
+    public static final String DESCRIPTIONS = "List of spring boot libraries to use in created micro service";
     @InjectMocks
     private SpringBootLibrariesListParameterDefinition springBootLibrariesListParameterDefinition = new SpringBootLibrariesListParameterDefinition();
     @Mock
@@ -51,15 +50,9 @@ public class SpringBootLibrariesListParameterDefinitionTest {
     public void annotationsAndDefaultValues() throws Exception {
         setUp();
         assertNotNull(SpringBootLibrariesListParameterDefinition.SpringBootLibrariesListParameter.class.getAnnotation(Extension.class));
-        assertEquals("spring-boot-libraries", springBootLibrariesListParameterDefinition.getName());
-        assertEquals("List of spring boot libraries to use in created micro service", springBootLibrariesListParameterDefinition.getDescription());
+        assertEquals("selectedSpringDependencies", springBootLibrariesListParameterDefinition.getName());
+        assertEquals(DESCRIPTIONS, springBootLibrariesListParameterDefinition.getDescription());
         assertEquals("Spring boot libraries", new SpringBootLibrariesListParameterDefinition.SpringBootLibrariesListParameter().getDisplayName());
-    }
-
-    @Test(expected = RuntimeException.class)
-    public void notSupported() throws Exception {
-        setUp();
-        springBootLibrariesListParameterDefinition.createValue(mock(StaplerRequest.class));
     }
 
     @Test
@@ -75,12 +68,11 @@ public class SpringBootLibrariesListParameterDefinitionTest {
         setUp();
         final StaplerRequest staplerRequest = mock(StaplerRequest.class);
         final JSONObject jsonObject = mock(JSONObject.class);
-        final JSONArray jsonArray = mock(JSONArray.class);
-        when(jsonObject.getJSONArray("value")).thenReturn(jsonArray);
-        when(jsonArray.join(",", true)).thenReturn("lib-ids");
+        final StringParameterValue stringParameterValue = mock(StringParameterValue.class);
+        when(staplerRequest.bindJSON(StringParameterValue.class, jsonObject)).thenReturn(stringParameterValue);
         final ParameterValue value = springBootLibrariesListParameterDefinition.createValue(staplerRequest, jsonObject);
-        assertEquals("selectedSpringDependencies", value.getName());
-        assertEquals("lib-ids", value.getValue());
+        assertEquals(stringParameterValue, value);
+        verify(stringParameterValue).setDescription(DESCRIPTIONS);
     }
 
     @Test
@@ -113,4 +105,15 @@ public class SpringBootLibrariesListParameterDefinitionTest {
         field.set(null, picoContainer);
     }
 
+    @Test
+    public void groups() throws Exception {
+        setUp();
+        final SpringDependency springDependency1 = mock(SpringDependency.class);
+        final SpringDependency springDependency2 = mock(SpringDependency.class);
+        when(springDependency1.getGroup()).thenReturn("g1");
+        when(springDependency2.getGroup()).thenReturn("g2");
+        when(springInitializrClient.getAvailableDependencies("1.5.3.RELEASE")).thenReturn(Arrays.asList(springDependency1, springDependency2));
+        assertEquals("g1, g2", springBootLibrariesListParameterDefinition.getGroups());
+
+    }
 }

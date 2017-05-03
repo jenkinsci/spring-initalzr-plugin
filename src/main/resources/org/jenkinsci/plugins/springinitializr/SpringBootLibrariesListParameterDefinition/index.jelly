@@ -4,7 +4,7 @@
     <j:set var="visibleDisplay" value="inline-block"/>
     <style>
         #search {width: 100%}
-        #hiddenValue {display: none}
+        #hiddenValue {display: block}
         .selectedDisplay { min-height: 30px}
         .selectedId { background: lightgreen; display: inline-block; padding: 3px; margin: 3px; cursor: pointer;}
         .lib {background: lightgreen; padding: 3px; margin: 3px; cursor: pointer; display: ${visibleDisplay}}
@@ -12,7 +12,7 @@
     <f:entry title="Spring boot libraries are going to be used">
         <f:textbox id="hiddenValue" field="parameter"/>
         <div class="selectedDisplay" id="selected"></div>
-        <input id="search"/>
+        <input id="search" placeholder="${it.groups}" title="Use g: prefix for filter groups. Available ones are: ${it.groups}"/>
         <div>
             <j:forEach var="lib" items="${it.libs}">
                 <div id="div-${lib.id}" class="lib" onclick="clickedUnselected(event)">${lib.name}</div>
@@ -27,7 +27,7 @@
         var searchById = {
         <j:set var="lastIndex" value="${it.libs.size() - 1}"/>
         <j:forEach var="lib" items="${it.libs}">
-            "${lib.id}" : "${lib.group.toLowerCase()} ${lib.name.toLowerCase()} ${lib.description.toLowerCase()}"<j:if test="${idx != lastIndex}">,</j:if>
+            "${lib.id}" : "g:${lib.group.toLowerCase()} ${lib.name.toLowerCase()} ${lib.description.toLowerCase()}"<j:if test="${idx != lastIndex}">,</j:if>
         </j:forEach>
         };
 
@@ -73,12 +73,12 @@
                 if (model.selectedIds.hasOwnProperty(prop)) {
                     var item = model.selectedIds[prop];
                     anHtml += "&lt;div class='selectedId' onclick='clickedSelected(\"" + item + "\")'>" + item + "&lt;/div>";
-                    anJson += '"' + item + '",';
+                    anJson += item + ',';
                 }
             }
             selectedDisplay.innerHTML = anHtml;
             var listValue = anJson.substr(0, anJson.length-1);
-            hiddenValue.value = "[{\"name\" : \"spring-boot-libraries\", \"value\": [" + listValue + "]}]";
+            hiddenValue.value = "[{\"name\" : \"${it.name}\", \"value\": \"" + listValue + "\"}]";
         }
         function clickedSelected(text) {
             var newSelected = [];

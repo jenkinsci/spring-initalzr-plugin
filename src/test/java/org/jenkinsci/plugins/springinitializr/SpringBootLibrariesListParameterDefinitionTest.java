@@ -10,6 +10,7 @@ import org.jenkinsci.plugins.springinitializr.client.SpringInitializrUrlProvider
 import org.jenkinsci.plugins.springinitializr.client.domain.SpringDependency;
 import org.jenkinsci.plugins.springinitializr.rest.JsonParserImpl;
 import org.jenkinsci.plugins.springinitializr.rest.LightRestTemplateImpl;
+import org.jenkinsci.plugins.springinitializr.util.UnZipServiceImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -90,6 +91,7 @@ public class SpringBootLibrariesListParameterDefinitionTest {
         verify(picoContainer).addComponent(SpringInitializrUrlProviderImpl.class);
         verify(picoContainer).addComponent(JsonParserImpl.class);
         verify(picoContainer).addComponent(LightRestTemplateImpl.class);
+        verify(picoContainer).addComponent(UnZipServiceImpl.class);
         verify(picoContainer).start();
     }
     @Test

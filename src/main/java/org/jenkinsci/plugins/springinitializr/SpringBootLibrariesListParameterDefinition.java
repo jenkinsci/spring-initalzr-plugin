@@ -14,6 +14,7 @@ import org.jenkinsci.plugins.springinitializr.client.SpringInitializrUrlProvider
 import org.jenkinsci.plugins.springinitializr.client.domain.SpringDependency;
 import org.jenkinsci.plugins.springinitializr.rest.JsonParserImpl;
 import org.jenkinsci.plugins.springinitializr.rest.LightRestTemplateImpl;
+import org.jenkinsci.plugins.springinitializr.util.UnZipServiceImpl;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 import org.picocontainer.DefaultPicoContainer;
@@ -42,6 +43,7 @@ public class SpringBootLibrariesListParameterDefinition extends ParameterDefinit
         picoContainer.addComponent(SpringInitializrUrlProviderImpl.class);
         picoContainer.addComponent(JsonParserImpl.class);
         picoContainer.addComponent(LightRestTemplateImpl.class);
+        picoContainer.addComponent(UnZipServiceImpl.class);
         picoContainer.start();
     }
 

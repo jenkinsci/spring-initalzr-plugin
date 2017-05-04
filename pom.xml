@@ -21,8 +21,9 @@
     <name>Spring Initalzr plugin</name>
     <description>
         Add build parameter to be able to select spring dependencies(Spring Initalzr, http://start.spring.io)
+        Add pipeline step 'springBoot' to create spring boot application
     </description>
-    <url>https://wiki.jenkins-ci.org/display/JENKINS/SpringInitalzrPlugin</url>
+    <url>https://wiki.jenkins-ci.org/display/JENKINS/Spring+Initializr+Plugin</url>
 
     <licenses>
         <license>

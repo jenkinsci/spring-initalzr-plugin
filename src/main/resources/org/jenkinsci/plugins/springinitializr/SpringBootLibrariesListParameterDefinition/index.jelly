@@ -4,7 +4,7 @@
     <j:set var="visibleDisplay" value="inline-block"/>
     <style>
         #search {width: 100%}
-        #hiddenValue {display: block}
+        #hiddenValue {display: none}
         .selectedDisplay { min-height: 30px}
         .selectedId { background: lightgreen; display: inline-block; padding: 3px; margin: 3px; cursor: pointer;}
         .lib {background: lightgreen; padding: 3px; margin: 3px; cursor: pointer; display: ${visibleDisplay}}

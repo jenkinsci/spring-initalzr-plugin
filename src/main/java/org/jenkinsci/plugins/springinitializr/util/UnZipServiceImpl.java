@@ -19,7 +19,7 @@ public class UnZipServiceImpl implements UnZipService {
                     continue;
                 final String entryName = nextEntry.getName().substring(stripPrefix.length() + 1);
                 final File file = new File(directory, entryName).getAbsoluteFile();
-                file.getParentFile().mkdirs();
+                assert file.getParentFile().mkdirs();
                 try (OutputStream outputStream = new FileOutputStream(file)) {
                     while ((read = zipInputStream.read(buffer)) > 0) outputStream.write(buffer, 0, read);
                 }

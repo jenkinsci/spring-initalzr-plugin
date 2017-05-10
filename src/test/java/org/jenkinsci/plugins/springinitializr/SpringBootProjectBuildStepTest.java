@@ -149,6 +149,14 @@ public class SpringBootProjectBuildStepTest {
         doTest(projectSetup);
     }
 
+    @Test
+    public void projectName() throws Exception {
+        final ProjectSetup projectSetup = defaultProjectSetup();
+        projectSetup.setName("name");
+        springBootProjectBuildStep.setProjectName("name");
+        doTest(projectSetup);
+    }
+
     private ProjectSetup defaultProjectSetup() {
         final ProjectSetup projectSetup = new ProjectSetup();
         projectSetup.setSelectedIDs("");
@@ -162,6 +170,7 @@ public class SpringBootProjectBuildStepTest {
         projectSetup.setJavaVersion("1.8");
         projectSetup.setLanguage("java");
         projectSetup.setAutocomplete("");
+        projectSetup.setName("demo");
         return projectSetup;
     }
 

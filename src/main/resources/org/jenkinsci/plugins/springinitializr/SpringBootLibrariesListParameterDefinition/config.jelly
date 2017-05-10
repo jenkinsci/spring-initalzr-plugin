@@ -1,4 +1,12 @@
 <?jelly escape-by-default='true'?>
-<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define" xmlns:l="/lib/layout"
-         xmlns:t="/lib/hudson" xmlns:f="/lib/form">
+<j:jelly xmlns:j="jelly:core" xmlns:st="jelly:stapler" xmlns:d="jelly:define"
+         xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form"
+         xmlns:i="jelly:fmt" xmlns:p="/lib/hudson/project">
+    <f:entry title="Spring Boot Version" field="springBootVersion">
+        <select name="springBootVersion">
+            <option value="1.5.3.RELEASE">1.5.3</option>
+            <option value="1.4.6.RELEASE">1.4.6</option>
+            <option value="1.3.8.RELEASE">1.3.8</option>
+        </select>
+    </f:entry>
 </j:jelly>

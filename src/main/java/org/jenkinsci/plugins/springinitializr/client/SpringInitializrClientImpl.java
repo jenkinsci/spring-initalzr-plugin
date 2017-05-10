@@ -43,7 +43,7 @@ public class SpringInitializrClientImpl implements SpringInitializrClient {
 
     @Override
     public void extract(File toDirecttory, ProjectSetup projectSetup) {
-        try (ZipInputStream zipInputStream = new ZipInputStream(ProxyConfiguration.getInputStream(springInitializrUrlProvider.getStarterZip(STARTER, STARTER, projectSetup).toURL()))){
+        try (ZipInputStream zipInputStream = new ZipInputStream(ProxyConfiguration.getInputStream(springInitializrUrlProvider.getStarterZip(projectSetup.getName(), STARTER, projectSetup).toURL()))){
             unZipService.unzip(toDirecttory, zipInputStream, STARTER);
         } catch (IOException e) {
             throw new RuntimeException(e);

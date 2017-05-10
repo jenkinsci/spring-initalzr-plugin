@@ -80,8 +80,7 @@
                 }
             }
             selectedDisplay.innerHTML = anHtml;
-            var listValue = anJson.substr(0, anJson.length-1);
-            hiddenValue.value = "[{\"name\" : \"${it.name}\", \"value\": \"" + listValue + "\"}]";
+            hiddenValue.value = anJson.substr(0, anJson.length-1);
         }
         function clickedSelected(text) {
             var newSelected = [];

@@ -7,6 +7,7 @@ import lombok.EqualsAndHashCode;
 @Data
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class ProjectSetup {
+    private String name;
     private String selectedIDs;
     private String type;
     private String bootVersion;

@@ -1,13 +1,11 @@
 package org.jenkinsci.plugins.springinitializr;
 
 import com.google.common.base.Joiner;
-import com.google.inject.Inject;
 import hudson.Extension;
 import hudson.init.InitMilestone;
 import hudson.init.Initializer;
 import hudson.model.*;
 import net.sf.json.JSONObject;
-import org.jenkinsci.Symbol;
 import org.jenkinsci.plugins.springinitializr.client.SpringInitializrClient;
 import org.jenkinsci.plugins.springinitializr.client.SpringInitializrClientImpl;
 import org.jenkinsci.plugins.springinitializr.client.SpringInitializrUrlProviderImpl;
@@ -17,10 +15,8 @@ import org.jenkinsci.plugins.springinitializr.rest.LightRestTemplateImpl;
 import org.jenkinsci.plugins.springinitializr.util.UnZipServiceImpl;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
-import org.picocontainer.DefaultPicoContainer;
 import org.picocontainer.MutablePicoContainer;
 import org.picocontainer.PicoBuilder;
-import org.picocontainer.PicoContainer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,12 +26,13 @@ import java.util.List;
 
 public class SpringBootLibrariesListParameterDefinition extends StringParameterDefinition {
     public static final Logger LOG = LoggerFactory.getLogger(SpringBootLibrariesListParameterDefinition.class);
-    protected final static MutablePicoContainer picoContainer = new PicoBuilder().withSetterInjection().build();
-    private final String springBootVersion = "1.5.3.RELEASE";
+    private final static MutablePicoContainer picoContainer = new PicoBuilder().withSetterInjection().build();
+    private final String springBootVersion;
 
     @DataBoundConstructor
-    public SpringBootLibrariesListParameterDefinition() {
+    public SpringBootLibrariesListParameterDefinition(String springBootVersion) {
         super("selectedSpringDependencies", "","List of spring boot libraries to use in created micro service");
+        this.springBootVersion = springBootVersion;
     }
 
     @Initializer(after = InitMilestone.PLUGINS_STARTED  )

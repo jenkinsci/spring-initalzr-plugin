@@ -71,7 +71,8 @@ public class SpringInitializrClientImplTest {
 
     @Test
     public void extract() throws Exception {
-        when(springInitializrUrlProvider.getStarterZip("starter", "starter", projectSetup)).thenReturn(new URI("http://localhost/xxx"));
+        when(projectSetup.getName()).thenReturn("projectName");
+        when(springInitializrUrlProvider.getStarterZip("projectName", "starter", projectSetup)).thenReturn(new URI("http://localhost/xxx"));
         springInitializrClient.extract(directory, projectSetup);
         verify(unZipService).unzip(directory, zipInputStream, "starter");
         verify(zipInputStream).close();

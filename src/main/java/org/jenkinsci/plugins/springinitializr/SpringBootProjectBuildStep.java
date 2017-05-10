@@ -34,7 +34,6 @@ import java.util.zip.ZipInputStream;
 @SuppressWarnings("OptionalUsedAsFieldOrParameterType")
 public class SpringBootProjectBuildStep extends Builder implements SimpleBuildStep {
     public static final Logger LOG = LoggerFactory.getLogger(SpringBootProjectBuildStep.class);
-    public static final String STARTER = "starter";
     private Optional<String> selectedIDs = Optional.absent();
     private Optional<String> type = Optional.absent();
     private Optional<String> bootVersion = Optional.absent();
@@ -46,6 +45,7 @@ public class SpringBootProjectBuildStep extends Builder implements SimpleBuildSt
     private Optional<String> javaVersion = Optional.absent();
     private Optional<String> language = Optional.absent();
     private Optional<String> autocomplete = Optional.absent();
+    private Optional<String> projectName = Optional.absent();
 
     @DataBoundConstructor
     public SpringBootProjectBuildStep(String selectedIDs) {
@@ -150,6 +150,16 @@ public class SpringBootProjectBuildStep extends Builder implements SimpleBuildSt
         this.autocomplete = Optional.of(autocomplete);
     }
 
+    public String getProjectName() {
+        return projectName.orNull();
+    }
+
+    @DataBoundSetter
+    public void setProjectName(String projectName) {
+        this.projectName = Optional.fromNullable(projectName);
+    }
+
+
     @Override
     public void perform(@Nonnull Run<?, ?> run, @Nonnull FilePath workspace, @Nonnull Launcher launcher, @Nonnull final TaskListener listener) throws InterruptedException, IOException {
         workspace.act(new FilePath.FileCallable<Void>() {
@@ -157,6 +167,7 @@ public class SpringBootProjectBuildStep extends Builder implements SimpleBuildSt
             public Void invoke(File baseFile, VirtualChannel virtualChannel) throws IOException, InterruptedException {
                 final ProjectSetup projectSetup = new ProjectSetup();
                 projectSetup.setSelectedIDs(selectedIDs.or(""));
+                projectSetup.setName(projectName.or("demo"));
                 projectSetup.setType(type.or("maven-project"));
                 projectSetup.setBootVersion(bootVersion.or("1.5.3.RELEASE"));
                 projectSetup.setGroupId(groupId());

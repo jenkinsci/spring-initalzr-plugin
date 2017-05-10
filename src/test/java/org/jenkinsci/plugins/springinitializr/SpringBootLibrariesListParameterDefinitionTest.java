@@ -36,7 +36,7 @@ import static org.mockito.Mockito.*;
 public class SpringBootLibrariesListParameterDefinitionTest {
     public static final String DESCRIPTIONS = "List of spring boot libraries to use in created micro service";
     @InjectMocks
-    private SpringBootLibrariesListParameterDefinition springBootLibrariesListParameterDefinition = new SpringBootLibrariesListParameterDefinition();
+    private SpringBootLibrariesListParameterDefinition springBootLibrariesListParameterDefinition = new SpringBootLibrariesListParameterDefinition(springBootVersion);
     @Mock
     private SpringInitializrClient springInitializrClient;
 

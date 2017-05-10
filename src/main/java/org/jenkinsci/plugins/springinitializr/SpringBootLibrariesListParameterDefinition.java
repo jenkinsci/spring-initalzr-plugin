@@ -28,14 +28,14 @@ import java.util.HashSet;
 import java.util.List;
 
 
-public class SpringBootLibrariesListParameterDefinition extends ParameterDefinition {
+public class SpringBootLibrariesListParameterDefinition extends StringParameterDefinition {
     public static final Logger LOG = LoggerFactory.getLogger(SpringBootLibrariesListParameterDefinition.class);
     protected final static MutablePicoContainer picoContainer = new PicoBuilder().withSetterInjection().build();
     private final String springBootVersion = "1.5.3.RELEASE";
 
     @DataBoundConstructor
     public SpringBootLibrariesListParameterDefinition() {
-        super("selectedSpringDependencies","List of spring boot libraries to use in created micro service");
+        super("selectedSpringDependencies", "","List of spring boot libraries to use in created micro service");
     }
 
     @Initializer(after = InitMilestone.PLUGINS_STARTED  )
@@ -71,14 +71,8 @@ public class SpringBootLibrariesListParameterDefinition extends ParameterDefinit
         return stringParameterValue;
     }
 
-    @Override
-    public ParameterValue createValue(StaplerRequest staplerRequest) {
-        throw new RuntimeException();
-    }
-
     @Extension
     public static class SpringBootLibrariesListParameter extends ParameterDescriptor {
-
         @Override
         public String getDisplayName() {
             return "Spring boot libraries";

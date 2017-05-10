@@ -10,7 +10,10 @@
         .lib {background: lightgreen; padding: 3px; margin: 3px; cursor: pointer; display: ${visibleDisplay}}
     </style>
     <f:entry title="Spring boot libraries are going to be used">
-        <f:textbox id="hiddenValue" field="parameter"/>
+        <div name="parameter">
+            <input type="hidden" name="name" value="${it.name}" />
+            <f:textbox id="hiddenValue" name="value"/>
+        </div>
         <div class="selectedDisplay" id="selected"></div>
         <input id="search" placeholder="${it.groups}" title="Use g: prefix for filter groups. Available ones are: ${it.groups}"/>
         <div>

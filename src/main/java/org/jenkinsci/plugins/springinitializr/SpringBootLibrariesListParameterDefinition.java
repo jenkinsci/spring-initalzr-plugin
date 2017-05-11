@@ -26,7 +26,7 @@ import java.util.List;
 
 public class SpringBootLibrariesListParameterDefinition extends StringParameterDefinition {
     public static final Logger LOG = LoggerFactory.getLogger(SpringBootLibrariesListParameterDefinition.class);
-    private final static MutablePicoContainer picoContainer = new PicoBuilder().withSetterInjection().build();
+    final static MutablePicoContainer picoContainer = new PicoBuilder().withSetterInjection().build();
     private final String springBootVersion;
 
     @DataBoundConstructor

@@ -35,6 +35,7 @@ import static org.mockito.Mockito.*;
 @PrepareForTest({SpringBootLibrariesListParameterDefinition.class, JSONObject.class, JSONArray.class})
 public class SpringBootLibrariesListParameterDefinitionTest {
     public static final String DESCRIPTIONS = "List of spring boot libraries to use in created micro service";
+    private final String springBootVersion = "1.5.3.RELEASE";
     @InjectMocks
     private SpringBootLibrariesListParameterDefinition springBootLibrariesListParameterDefinition = new SpringBootLibrariesListParameterDefinition(springBootVersion);
     @Mock
@@ -59,7 +60,7 @@ public class SpringBootLibrariesListParameterDefinitionTest {
     public void getLibs() throws Exception {
         setUp();
         final List<SpringDependency> expected = mock(List.class);
-        when(springInitializrClient.getAvailableDependencies("1.5.3.RELEASE")).thenReturn(expected);
+        when(springInitializrClient.getAvailableDependencies(springBootVersion)).thenReturn(expected);
         assertEquals(expected, springBootLibrariesListParameterDefinition.getLibs());
     }
 
